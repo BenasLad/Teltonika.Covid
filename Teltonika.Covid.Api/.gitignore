@@ -1,4 +1,6 @@
 obj/
 DesignTimeBuild/
+bin/
+.vs/
 
 .suo
