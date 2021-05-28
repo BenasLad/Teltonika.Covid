@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Teltonika.Covid.Api.DataAccess;
 
 namespace Teltonika.Covid.Api
 {
@@ -17,6 +19,10 @@ namespace Teltonika.Covid.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<UsersContext>(options => 
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("usersDb"));
+            });
             services.AddControllersWithViews();
         }
 
