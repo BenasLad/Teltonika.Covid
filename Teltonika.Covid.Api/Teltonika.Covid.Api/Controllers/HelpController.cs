@@ -1,11 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Teltonika.Covid.Api.Controllers
 {
-    public class HelpController
+    [ApiController]
+    public class HelpController : ControllerBase
     {
+        [HttpGet("help")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<string> GetPoliciesAsync()
+        {
+            var helpMessage = "Please get some help dialing 1808";
+            return Ok(helpMessage);
+        }
     }
 }
