@@ -3,9 +3,9 @@ using Teltonika.Covid.Api.Entities;
 
 namespace Teltonika.Covid.Api.DataAccess
 {
-    public class UsersContext : DbContext
+    public class UsersDbContext : DbContext, IUsersDbContext
     {
-        public UsersContext(DbContextOptions options) : base(options) { }
+        public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
     }

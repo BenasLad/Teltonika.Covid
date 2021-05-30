@@ -6,7 +6,7 @@ using Teltonika.Covid.Api.DataAccess;
 
 namespace Teltonika.Covid.Api.Migrations
 {
-    [DbContext(typeof(UsersContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class UsersContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

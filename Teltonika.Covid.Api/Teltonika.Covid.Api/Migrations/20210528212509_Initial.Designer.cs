@@ -8,7 +8,7 @@ using Teltonika.Covid.Api.DataAccess;
 
 namespace Teltonika.Covid.Api.Migrations
 {
-    [DbContext(typeof(UsersContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20210528212509_Initial")]
     partial class Initial
     {
