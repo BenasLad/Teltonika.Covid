@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 
 import LoginForm from "./components/Login/Login";
@@ -9,10 +9,15 @@ import List from "./components/List/List";
 
 
 function App() {
-    const { setToken } = useToken();
+    const [token, setTokenToState] = useState();
+    const { getToken, setToken } = useToken();
+    const persistedToken = getToken();
+    if (persistedToken !== token)
+        setTokenToState(persistedToken);
 
-    const handleToken = (token) => {
-        setToken(token);
+    const handleTokenSet = (tokenToSet) => {
+        setToken(tokenToSet);
+        setTokenToState(tokenToSet);
     };
 
     return (
@@ -22,8 +27,8 @@ function App() {
                     <ul>
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/list">List</Link></li>
-                        <li><Link to="/newEntry">New Entry</Link></li>
-                        <li><Link to="/login">Login</Link></li>
+                        { token && <li><Link to="/newEntry">New Entry</Link></li> }
+                        { !token && <li><Link to="/login">Login</Link></li> }
                     </ul>
                 </nav>
                 <Switch>
@@ -37,7 +42,7 @@ function App() {
                         <NewEntry />
                     </Route>
                     <Route path="/login">
-                        <LoginForm setToken={handleToken}/>
+                        <LoginForm setToken={handleTokenSet}/>
                     </Route>
                 </Switch>
             </BrowserRouter>

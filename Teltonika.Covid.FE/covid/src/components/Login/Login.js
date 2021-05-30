@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory, Redirect } from 'react-router-dom'
 import "./Login.scss";
+import useToken from "./useToken";
 
 export default function Login({setToken}) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [errorMessage, setErrorMessage] = useState();
     const history = useHistory();
+    const { getToken } = useToken();
 
     const loginUser = async (credentials) => {
         return fetch('https://localhost:44385/token', {
@@ -17,12 +19,15 @@ export default function Login({setToken}) {
             body: JSON.stringify(credentials)
         })
             .then(data => {
-                if (!data.ok) {
-                    data.json().then(e => {
-                        setErrorMessage(e.detail);
-                    });
-                }
-                return data.json()
+                return data.json().then(response => {
+                    let result = null;
+                    if (!data.ok)
+                        setErrorMessage(response.detail);
+                    else
+                        result = response;
+
+                    return result;
+                });
             });
     };
 
@@ -34,13 +39,15 @@ export default function Login({setToken}) {
             password
         })
             .then(tokenResponse => {
-                setToken(tokenResponse.token);
-                history.push("/newEntry");
-            })
-            .catch(e => {
-                console.log(e);
+                if (!!tokenResponse) {
+                    setToken(tokenResponse.token);
+                    history.push("/newEntry");
+                }
             });
     };
+
+    if (!!getToken())
+        return (<Redirect to="/newEntry" />);
 
     return (
         <div className="base-container">
