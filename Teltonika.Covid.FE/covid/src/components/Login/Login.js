@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory, Redirect } from 'react-router-dom';
 import "./Login.scss";
 import useToken from "./useToken";
 
