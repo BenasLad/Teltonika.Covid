@@ -20,7 +20,7 @@ namespace Teltonika.Covid.Api.Services
         {
             if (!string.IsNullOrEmpty(credentials.Username) 
                 && !string.IsNullOrEmpty(credentials.Password) 
-                && (await _userRepository.IsLoginValid(credentials.Username, credentials.Password)))
+                && (await _userRepository.IsLoginValid(credentials.Username, HashService.ComputeSha256Hash(credentials.Password))))
             {
                 return new Token { AccessToken = _jwtService.GenerateSecurityToken() };
             }

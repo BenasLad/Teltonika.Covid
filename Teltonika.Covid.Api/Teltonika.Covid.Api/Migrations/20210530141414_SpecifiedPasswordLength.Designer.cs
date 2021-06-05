@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teltonika.Covid.Api.DataAccess;
 
 namespace Teltonika.Covid.Api.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20210530141414_SpecifiedPasswordLength")]
+    partial class SpecifiedPasswordLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

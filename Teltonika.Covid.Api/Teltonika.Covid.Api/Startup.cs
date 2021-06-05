@@ -30,11 +30,19 @@ namespace Teltonika.Covid.Api
             {
                 options.UseSqlServer(Configuration.GetConnectionString("usersDb"));
             });
+            services.AddDbContext<CovidDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("covidDb"));
+            });
+
             services.AddControllersWithViews();
 
             services.AddScoped<IUsersDbContext, UsersDbContext>();
+            services.AddScoped<ICovidDbContext, CovidDbContext>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICaseRepository, CaseRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICaseService, CaseService>();
             services.AddScoped<IJwtService, JwtService>();
 
             var jwtSection = Configuration.GetSection(JWTSettings.Name);

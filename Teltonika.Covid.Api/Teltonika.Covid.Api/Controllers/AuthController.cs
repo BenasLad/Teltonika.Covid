@@ -22,17 +22,9 @@ namespace Teltonika.Covid.Api.Controllers
         [AllowAnonymous]
         [HttpPost("token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<ActionResult<Token>> GetPoliciesAsync(CredentialsRequestModel credentialsRequest)
+        public Task<ActionResult<Token>> GetTokenAsync(CredentialsRequestModel credentialsRequest)
         {
             return ExecuteAsync(async () => await _userService.GetAccessToken(credentialsRequest));
-        }
-
-        [HttpGet("help")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<string> GetHelp()
-        {
-            var helpMessage = "Please get some help dialing 1808";
-            return Ok(helpMessage);
         }
     }
 }
