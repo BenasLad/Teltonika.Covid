@@ -29,12 +29,13 @@ namespace Teltonika.Covid.Api.Services
             };
         }
 
-        public async Task<IEnumerable<CaseResponse>> GetCasesAsync(ListOptions listOptions)
+        public async Task<GetCasesResponse> GetCasesAsync(ListOptions listOptions)
         {
             var offset = (listOptions.Page - 1) * listOptions.PageSize;
+            var caseCount = await _caseRepository.GetCasesCountAsync(listOptions.Filters);
+            var pageCount = caseCount / listOptions.PageSize + 1;
             var cases = await _caseRepository.GetCasesAsync(listOptions.PageSize, offset, listOptions.Filters );
-
-            return cases.Select(c => new CaseResponse
+            var casesResult = cases.Select(c => new CaseModel
             {
                 Id = c.Id,
                 Gender = c.Gender?.Name,
@@ -47,6 +48,13 @@ namespace Teltonika.Covid.Api.Services
                 X = c.X,
                 Y = c.Y
             });
+
+            return new GetCasesResponse
+            {
+                Cases = casesResult,
+                PageCount = pageCount,
+                Page = listOptions.Page
+            };
         }
 
         public async Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate)

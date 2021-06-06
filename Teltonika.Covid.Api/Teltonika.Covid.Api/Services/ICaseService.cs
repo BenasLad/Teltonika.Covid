@@ -8,7 +8,7 @@ namespace Teltonika.Covid.Api.Services
     public interface ICaseService
     {
         Task<ListMetadata> GetListMetadata();
-        Task<IEnumerable<CaseResponse>> GetCasesAsync(ListOptions listOptions);
+        Task<GetCasesResponse> GetCasesAsync(ListOptions listOptions);
         Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate);
     }
 }

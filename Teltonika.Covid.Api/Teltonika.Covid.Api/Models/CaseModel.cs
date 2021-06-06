@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Teltonika.Covid.Api.Models
 {
-    public class CaseResponse
+    public class CaseModel
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }

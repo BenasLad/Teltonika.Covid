@@ -34,33 +34,27 @@ namespace Teltonika.Covid.Api.Repositories
             return await _covidContext.Municipalities.ToListAsync();
         }
 
-        public async Task<List<Case>> GetCasesAsync(int pageSize, int skip, FilterOptions filterOptions)
+        public async Task<List<Case>> GetCasesAsync(int pageSize, int skip, FilterOptions? filterOptions)
         {
             var query = _covidContext.Cases
                 .Include(c => c.AgeBracket)
                 .Include(c => c.Gender)
                 .Include(c => c.Municipality)
-                .AsQueryable();
-
-            if (filterOptions.Gender != null)
-                query = query.Where(c => c.Gender!.Id == filterOptions.Gender);
-
-            if (filterOptions.AgeBracket != null)
-                query = query.Where(c => c.AgeBracket!.Id == filterOptions.AgeBracket);
-
-            if (filterOptions.Municipality != null)
-                query = query.Where(c => c.Municipality!.Id == filterOptions.Municipality);
-
-            if (filterOptions.ConfirmationDateFrom != null)
-                query = query.Where(c => c.ConfirmationDate >= filterOptions.ConfirmationDateFrom);
-
-            if (filterOptions.ConfirmationDateTo != null)
-                query = query.Where(c => c.ConfirmationDate <= filterOptions.ConfirmationDateTo);
+                .AsSplitQuery();
+            query = ApplyFilters(query, filterOptions);
 
             return await query
                 .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<int> GetCasesCountAsync(FilterOptions? filterOptions)
+        {
+            var query = _covidContext.Cases.AsQueryable();
+            query = ApplyFilters(query, filterOptions);
+
+            return await query.CountAsync();
         }
 
         public async Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate)
@@ -84,6 +78,29 @@ namespace Teltonika.Covid.Api.Repositories
                 CaseCode = HashService.ComputeSha256Hash(new Guid().ToString())
             });
             return await _covidContext.SaveChangesAsync();
+        }
+
+        private IQueryable<Case> ApplyFilters(IQueryable<Case> query, FilterOptions? filterOptions)
+        {
+            if (filterOptions != null)
+            {
+                if (filterOptions.Gender != null)
+                    query = query.Where(c => c.Gender!.Id == filterOptions.Gender);
+
+                if (filterOptions.AgeBracket != null)
+                    query = query.Where(c => c.AgeBracket!.Id == filterOptions.AgeBracket);
+
+                if (filterOptions.Municipality != null)
+                    query = query.Where(c => c.Municipality!.Id == filterOptions.Municipality);
+
+                if (filterOptions.ConfirmationDateFrom != null)
+                    query = query.Where(c => c.ConfirmationDate >= filterOptions.ConfirmationDateFrom);
+
+                if (filterOptions.ConfirmationDateTo != null)
+                    query = query.Where(c => c.ConfirmationDate <= filterOptions.ConfirmationDateTo);
+            }
+
+            return query;
         }
     }
 }

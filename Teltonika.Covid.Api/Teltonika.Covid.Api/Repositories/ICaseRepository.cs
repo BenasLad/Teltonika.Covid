@@ -10,7 +10,8 @@ namespace Teltonika.Covid.Api.Repositories
         Task<List<Gender>> GetGendersAsync();
         Task<List<Municipality>> GetMunicipalitiesAsync();
         Task<List<AgeBracket>> GetAgeBracketsAsync();
-        Task<List<Case>> GetCasesAsync(int pageSize, int skip, FilterOptions filterOptions);
+        Task<List<Case>> GetCasesAsync(int pageSize, int skip, FilterOptions? filterOptions);
         Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate);
+        Task<int> GetCasesCountAsync(FilterOptions? filterOptions);
     }
 }

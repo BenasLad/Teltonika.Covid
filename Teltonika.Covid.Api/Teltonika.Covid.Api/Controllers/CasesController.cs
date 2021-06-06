@@ -28,9 +28,9 @@ namespace Teltonika.Covid.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("cases")]
+        [HttpPost("cases/list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public Task<ActionResult<IEnumerable<CaseResponse>>> GetCasesAsync(ListOptions listOptions)
+        public Task<ActionResult<GetCasesResponse>> GetCasesAsync(ListOptions listOptions)
         {
             return ExecuteAsync(async () => await _caseService.GetCasesAsync(listOptions));
         }
