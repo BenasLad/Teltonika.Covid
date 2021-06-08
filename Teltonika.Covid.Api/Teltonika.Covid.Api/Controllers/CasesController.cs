@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Teltonika.Covid.Api.Models;
 using Teltonika.Covid.Api.Repositories;
@@ -9,6 +9,7 @@ using Teltonika.Covid.Api.Services;
 
 namespace Teltonika.Covid.Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class CasesController : CovidControllerBase
     {
@@ -35,12 +36,11 @@ namespace Teltonika.Covid.Api.Controllers
             return ExecuteAsync(async () => await _caseService.GetCasesAsync(listOptions));
         }
 
-        [AllowAnonymous]
         [HttpPost("cases")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public Task<ActionResult<int>> CreateCaseAsync(CreateCaseRequest caseToCreate)
         {
-            return ExecuteAsync(async () => await _caseService.CreateCaseAsync(caseToCreate));
+            return CreateAsync(async () => await _caseService.CreateCaseAsync(caseToCreate));
         }
     }
 }

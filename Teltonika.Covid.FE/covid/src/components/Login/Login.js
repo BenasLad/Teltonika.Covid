@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
 import "./Login.scss";
 import useToken from "./useToken";
+import {fetchToken} from "../Services";
 
 export default function Login({setToken}) {
     const [username, setUserName] = useState();
@@ -11,13 +12,7 @@ export default function Login({setToken}) {
     const { getToken } = useToken();
 
     const loginUser = async (credentials) => {
-        return fetch('https://localhost:44385/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(credentials)
-        })
+        return fetchToken(credentials)
             .then(data => {
                 return data.json().then(response => {
                     let result = null;

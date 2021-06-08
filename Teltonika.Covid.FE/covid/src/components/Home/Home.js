@@ -1,8 +1,9 @@
 import React  from 'react';
+import Graph from "../Graph/Graph";
 
 export default function Home () {
     return (
-        <h1>Home</h1>
+        <Graph></Graph>
     );
 }
 

@@ -13,5 +13,6 @@ namespace Teltonika.Covid.Api.Repositories
         Task<List<Case>> GetCasesAsync(int pageSize, int skip, FilterOptions? filterOptions);
         Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate);
         Task<int> GetCasesCountAsync(FilterOptions? filterOptions);
+        Task<bool> ExistsAsync<TEntity>(int id) where TEntity : CovidEntity;
     }
 }

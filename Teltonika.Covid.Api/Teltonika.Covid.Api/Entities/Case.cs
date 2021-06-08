@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Teltonika.Covid.Api.Entities
 {
-    public class Case
+    public class Case : CovidEntity
     {
         [Column("object_id")]
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         [Column("gender")]
         public Gender Gender { get; set; }
@@ -27,13 +27,13 @@ namespace Teltonika.Covid.Api.Entities
         public string CaseCode { get; set; }
 
         [Column("Y")]
-        [Required(AllowEmptyStrings = false)]
-        [MaxLength(20)]
+        [Required(AllowEmptyStrings = true)]
+        [MaxLength(21)]
         public string Y { get; set; }
 
         [Column("X")]
-        [Required(AllowEmptyStrings = false)]
-        [MaxLength(20)]
+        [Required(AllowEmptyStrings = true)]
+        [MaxLength(21)]
         public string X { get; set; }
     }
 }

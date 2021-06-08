@@ -73,11 +73,16 @@ namespace Teltonika.Covid.Api.Repositories
                 Gender = gender,
                 Municipality = municipality,
                 ConfirmationDate = caseToCreate.ConfirmationDate,
-                X = caseToCreate.X,
-                Y = caseToCreate.Y,
+                X = caseToCreate.X ?? "",
+                Y = caseToCreate.Y ?? "",
                 CaseCode = HashService.ComputeSha256Hash(new Guid().ToString())
             });
             return await _covidContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsAsync<TEntity>(int id) where TEntity : CovidEntity
+        {
+            return await _covidContext.Set<TEntity>().AnyAsync(o => o.Id == id);
         }
 
         private IQueryable<Case> ApplyFilters(IQueryable<Case> query, FilterOptions? filterOptions)

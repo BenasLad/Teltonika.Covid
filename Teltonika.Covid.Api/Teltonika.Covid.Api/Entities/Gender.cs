@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Teltonika.Covid.Api.Entities
 {
-    public class Gender
+    public class Gender : CovidEntity
     {
         [Column("id")]
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         [Column("name")]
         [Required(AllowEmptyStrings = false)]

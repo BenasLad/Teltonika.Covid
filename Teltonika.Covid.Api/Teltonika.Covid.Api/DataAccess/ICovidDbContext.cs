@@ -13,5 +13,6 @@ namespace Teltonika.Covid.Api.DataAccess
         DbSet<Gender> Genders { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
     }
 }

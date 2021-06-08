@@ -7,7 +7,6 @@ import Home from "./components/Home/Home";
 import NewEntry from "./components/NewEntry/NewEntry";
 import List from "./components/List/List";
 
-
 function App() {
     const [token, setTokenToState] = useState();
     const { getToken, setToken } = useToken();
@@ -39,7 +38,7 @@ function App() {
                         <List />
                     </Route>
                     <Route path="/newEntry">
-                        <NewEntry />
+                        <NewEntry token={getToken()} />
                     </Route>
                     <Route path="/login">
                         <LoginForm setToken={handleTokenSet}/>

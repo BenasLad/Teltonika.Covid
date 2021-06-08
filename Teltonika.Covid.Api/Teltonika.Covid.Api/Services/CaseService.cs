@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Teltonika.Covid.Api.Entities;
+using Teltonika.Covid.Api.Exceptions;
 using Teltonika.Covid.Api.Models;
 using Teltonika.Covid.Api.Repositories;
 
@@ -59,6 +61,15 @@ namespace Teltonika.Covid.Api.Services
 
         public async Task<int> CreateCaseAsync(CreateCaseRequest caseToCreate)
         {
+            if (!await _caseRepository.ExistsAsync<Gender>(caseToCreate.Gender))
+                throw new ValidationException($"Gender with id = {caseToCreate.Gender} does not exist");
+
+            if (!await _caseRepository.ExistsAsync<Gender>(caseToCreate.AgeBracket))
+                throw new ValidationException($"AgeBracket with id = {caseToCreate.AgeBracket} does not exist");
+
+            if (!await _caseRepository.ExistsAsync<Gender>(caseToCreate.Municipality))
+                throw new ValidationException($"Municipality with id = {caseToCreate.Municipality} does not exist");
+
             return await _caseRepository.CreateCaseAsync(caseToCreate);
         }
     }

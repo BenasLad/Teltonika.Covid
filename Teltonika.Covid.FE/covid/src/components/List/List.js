@@ -1,5 +1,6 @@
 import React from 'react';
 import "./List.scss";
+import {fetchCases, fetchMetadata} from "../Services";
 
 const LIST_REQUEST_FIELDS = [
     "gender",
@@ -11,70 +12,40 @@ const LIST_REQUEST_FIELDS = [
     "page",
 ];
 
-const items = [
-    {
-        id: 1,
-        gender: "Vyras",
-        ageBracket: "50-60",
-        municipalityName: "Vilnius",
-        municipalityCode: "1",
-        confirmationDate: "2020-11-11",
-        caseCode: "bbfc706a889651dbc82f892d5427ce9887848b229bb2d78db2e9b40e64fce642"
-    },
-    {
-        id: 2,
-        gender: "Moteris",
-        ageBracket: "40-50",
-        municipalityName: "Vilnius",
-        municipalityCode: "1",
-        confirmationDate: "2019-11-11",
-        caseCode: "bbfc706a889651dbc82f892d5427ce9887848b229bb2d78db2e9b40e64fce642"
-    }
-];
-
 const formatDateString = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().slice(0, 10);
 };
 
-const getRow = (item) => {
+const getRow = (item, index) => {
     return (
-        <tr>
+        <tr key={index}>
             <td>{item.id}</td>
             <td>{item.gender}</td>
             <td>{item.age_bracket}</td>
             <td>{item.municipality}</td>
             <td>{formatDateString(item.confirmation_date)}</td>
             <td>{item.case_code}</td>
+            <td>{item.X}</td>
+            <td>{item.Y}</td>
         </tr>
     );
 };
 
-const getSelectOptions = (options) => {
+const getSelectOptions = (options, index) => {
     return options.map(option => {
         return (
-            <option value={option.id}>{option.name}</option>
+            <option key={index} value={option.id}>{option.name}</option>
         );
     });
-};
-
-const parseSelectValue = (value) => {
-    const parsed = parseInt(value, 10);
-    return isNaN(parsed) ? null : parsed;
 };
 
 const fieldsChanged = (prevObj, currObj, fields) => {
     return !!fields.find(field => prevObj[field] !== currObj[field]);
 };
 
-const fetchMetadata = async () => {
-    return fetch('https://localhost:44385/metadata', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => {
+const getMetadata = async () => {
+    return fetchMetadata().then(response => {
             return response.json().then(data => {
                 if (!response.ok)
                     console.log(data.detail);
@@ -83,24 +54,8 @@ const fetchMetadata = async () => {
         });
 };
 
-const fetchCases = async (listOptions) => {
-    return fetch('https://localhost:44385/cases/list', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            pageSize: parseSelectValue(listOptions.pageSize),
-            page: listOptions.page,
-            filters: {
-                gender: parseSelectValue(listOptions.gender),
-                ageBracket: parseSelectValue(listOptions.ageBracket),
-                municipality: parseSelectValue(listOptions.municipality),
-                confirmationDateFrom: listOptions.confirmationDateFrom,
-                confirmationDateTo: listOptions.confirmationDateTo,
-            }
-        })
-    })
+const GetCases = async (listOptions) => {
+    return fetchCases(listOptions)
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok)
@@ -123,7 +78,6 @@ const getListOptions = (state) => ({
 export default class List extends React.Component {
     constructor(props) {
         super(props);
-        console.log("constructor");
         this.state = {
             cases: false,
             metadata: false,
@@ -141,7 +95,7 @@ export default class List extends React.Component {
         this.handlePrevPageClick = this.handlePrevPageClick.bind(this);
         this.handleNextPageClick = this.handleNextPageClick.bind(this);
 
-        Promise.all([fetchMetadata(), fetchCases(getListOptions(this.state))]).then(results => {
+        Promise.all([getMetadata(), GetCases(getListOptions(this.state))]).then(results => {
             this.setState({
                 metadata: results[0],
                 cases: results[1].cases,
@@ -192,6 +146,8 @@ export default class List extends React.Component {
                            onChange={this.handleBasicChange}/>
                 </th>
                 <th>Case code</th>
+                <th>X</th>
+                <th>Y</th>
             </tr>
             </thead>
         );
@@ -211,12 +167,11 @@ export default class List extends React.Component {
 
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("update");
         if (fieldsChanged(prevState, this.state, LIST_REQUEST_FIELDS)) {
             const pageChanged = prevState.page !== this.state.page;
 
 
-            return fetchCases(getListOptions(this.state))
+            return GetCases(getListOptions(this.state))
                 .then(result => {
                     this.setState({cases: result.cases, page: pageChanged ? result.page : 1, pageCount: result.pageCount});
                 });
@@ -224,7 +179,6 @@ export default class List extends React.Component {
     }
 
     render() {
-        console.log("render");
         let headers;
         if (!!this.state.metadata)
             headers = this.getHeaders();
@@ -246,8 +200,8 @@ export default class List extends React.Component {
                     <button onClick={() => this.setState({page: this.state.pageCount})}>{'>>'}</button>
                     <span>Page <strong>{this.state.page} of {this.state.pageCount}</strong></span>
                     <select name="pageSize" value={this.state.pageSize} onChange={this.handleBasicChange}>
-                        {[10, 20, 30, 40, 50].map(pageSize => (
-                            <option value={pageSize}>
+                        {[10, 20, 30, 40, 50].map((pageSize, index) => (
+                            <option key={index} value={pageSize}>
                                 Show {pageSize}
                             </option>
                         ))}
